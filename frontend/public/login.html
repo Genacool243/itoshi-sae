@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/e739b303fd.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Itoshi SAE</title>
+</head>
+<body>
+    <div class="pageContainer">
+        <div class="contentContainer" id="content">
+            <h2 class="presentationTitle" id="text"></h2>
+        </div>
+    </div>
+    <div class="screenCover" id="cover"></div>
+    <script>
+        //Como no hay back, espero 2 segundos para simular una consulta a la base de datos para obtener la información del usuario que debe iniciar sesión, que será siempre el jefe en caso de que sea el primer inicio (se sabe eso con localStorage.getItem("first_open")), y en caso de que no lo sea se debe hacer una consulta primero para averiguar qué ciclo es el actual y qué usuario está a cargo (como no puedo hacer eso sin back, el usuario a cargo siempre va a ser el Empleado 1)
+
+        const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
+
+        const simularConsulta = async () => {
+
+            if (localStorage.getItem("first_open") == "false") {
+                if (localStorage.getItem("previous_user") == "none") {
+                    // Login Común
+
+                    // Se debe hacer una consulta para saber si hubo un ciclo anterior al actual y debe devolver una respuesta booleana
+
+                    let respuesta = true;
+
+                    if (respuesta == true) {
+                        await sleep(2000);
+                        inicioConCaja();
+                    } else {
+                        await sleep(2000);
+                        inicioSinCaja();
+                    }
+
+                } else {
+                    await sleep(2000);
+                    inicioJefe();
+                }
+            } else {
+                document.getElementById("text").innerText = "Bienvenido a Itoshi SAE";
+                await sleep(2000);
+                inicioJefePrimeraVez();
+            }
+        }
+
+        simularConsulta();
+
+        function inicioJefePrimeraVez() {
+            // Consulta para averiguar la información del usuario del jefe
+
+            let usuario = {"id": 0,"nombre": "Jefe","imagen": "fotoUsuarioPrueba1.png", "rango": 0};
+
+            document.getElementById("text").innerText = "Ingrese su contraseña";
+            document.getElementById("content").innerHTML += "<div class='inputContainer'><p class='errorMessage'></p><input type='password' class='passwordInput' id='input' onkeypress='eliminarError(this);'></div>";
+            document.getElementById("content").innerHTML += "<button class='passwordButton' id='button'>INICIAR SESIÓN</button>";
+            //document.getElementById("content").innerHTML += "<button class='backButton' id='backButton'><i class='fa-solid fa-arrow-left fa-2xl'></i></button>";
+
+            document.getElementById("content").children[1].focus();
+            
+            document.getElementById("button").addEventListener("click", function(e) {
+                login(usuario);
+            });
+            
+        }
+
+        function inicioJefe() {
+            // Consulta para averiguar la información del usuario del jefe
+
+            let usuario = {"id": 0,"nombre": "Jefe","imagen": "fotoUsuarioPrueba1.png", "rango": 0};
+
+            document.getElementById("text").innerText = "Ingrese su contraseña";
+            document.getElementById("content").innerHTML += "<div class='inputContainer'><p class='errorMessage'></p><input type='password' class='passwordInput' id='input' onkeypress='eliminarError(this);'></div>";
+            document.getElementById("content").innerHTML += "<button class='passwordButton' id='button'>INICIAR SESIÓN</button>";
+            document.getElementById("content").innerHTML += "<button class='backButton' id='backButton'><i class='fa-solid fa-arrow-left fa-2xl'></i></button>";
+
+            document.getElementById("content").children[1].focus();
+            
+            document.getElementById("button").addEventListener("click", function(e) {
+                login(usuario);
+            });
+
+            document.getElementById("backButton").addEventListener("click", function(e) {
+                // Hacer consulta para averiguar información sobre el usuario anterior con localStorage.getItem("previous_user") teniendo en cuenta que esto devuelve su ID
+
+                let usuario = {"id": 1,"nombre": "Empleado 1","imagen": "fotoUsuarioPrueba2.jpeg", "rango": 1}
+                localStorage.setItem("logged_in", "true");
+                localStorage.setItem("user_id", usuario.id);
+                localStorage.setItem("user_type", usuario.rango);
+                localStorage.setItem("previous_user", "none");
+
+                window.location.href = "index.html";
+            });
+        }
+       
+        function inicioConCaja() {
+            // Consulta a la base de datos para averiguar el monto de la caja del ciclo anterior, con esto también consigue la id del usuario al que le correspondía por lo que se hace otra consulta para sacar la información de ese usuario y conseguir su nombre
+
+            let ciclo = {
+                "anteriorUsuario" : "Empleado 2",
+                "usuarioActual" : "Empleado 1",
+                "ingresosHoraEfectivo" : "9020.00",
+                "ingresosHoraTarjeta" : "14020.00",
+                "ingresosEstadiaEfectivo" : "2320.00",
+                "ingresosEstadiaTarjeta" : "2500.00"
+            }
+
+            document.getElementById("content").classList.remove("contentContainer");
+            document.getElementById("content").classList.add("contentContainerBox");
+            document.getElementById("content").innerHTML += "<div class='cajaContainer'><p>Caja del turno de " + ciclo.anteriorUsuario + "</p><div class='registrosContainer'><div class='registrosLadoIzquierdo'><p>Ingresos por hora con efectivo:</p><p>Ingresos por estadía con efectivo:</p><p>Ingresos por hora con tarjeta/mp:</p><p>Ingresos por estadía con tarjeta/mp:</p><div class='horizontalLine'></div><p>Total en efectivo:</p><p>Total en tarjeta/mp:</p></div><div class='registrosLadoDerecho'><p>$" + ciclo.ingresosHoraEfectivo + "</p><p>$" + ciclo.ingresosHoraTarjeta + "</p><p>$" + ciclo.ingresosEstadiaEfectivo + "</p><p>$" + ciclo.ingresosEstadiaTarjeta + "</p><div class='horizontalLine'></div><p>$" + (parseInt(ciclo.ingresosHoraEfectivo) + parseInt(ciclo.ingresosEstadiaEfectivo)) + ".00</p><p>$" + (parseInt(ciclo.ingresosHoraTarjeta) + parseInt(ciclo.ingresosEstadiaTarjeta)) + ".00</p></div></div></div>";
+
+            // Se hace la consulta para averiguar el usuario al que le corresponde iniciar sesión en el ciclo actual con ciclo.usuarioActual
+
+            //let usuario = {"id": 1,"nombre": "Empleado 1","imagen": "fotoUsuarioPrueba2.jpeg", "rango": 1};
+            let usuario = {"id": 0,"nombre": "Jefe","imagen": "fotoUsuarioPrueba1.png", "rango": 0};
+
+            document.getElementById("text").innerText = "Confirme la caja ingresando su contraseña";
+            document.getElementById("content").innerHTML += "<div class='inputContainer'><p class='errorMessage'></p><input type='password' class='passwordInput' id='input' onkeypress='eliminarError(this);'></div>";
+            document.getElementById("content").innerHTML += "<button class='passwordButton' id='button'>CONFIRMAR E INICIAR SESIÓN</button>";
+
+            document.getElementById("content").children[1].focus();
+            
+            document.getElementById("button").addEventListener("click", function(e) {
+                login(usuario);
+            });
+        }
+
+        function inicioSinCaja() {
+            // Consulta para averiguar el usuario al que le corresponde iniciar sesión en el ciclo actual
+
+            let usuario = {"id": 1,"nombre": "Empleado 1","imagen": "fotoUsuarioPrueba2.jpeg", "rango": 1};
+
+            document.getElementById("text").innerText = "Ingrese su contraseña";
+            document.getElementById("content").innerHTML += "<div class='inputContainer'><p class='errorMessage'></p><input type='password' class='passwordInput' id='input' onkeypress='eliminarError(this);'></div>";
+            document.getElementById("content").innerHTML += "<button class='passwordButton' id='button'>INICIAR SESIÓN</button>";
+
+            document.getElementById("content").children[1].focus();
+            
+            document.getElementById("button").addEventListener("click", function(e) {
+                login(usuario);
+            });
+        }
+
+        function login(usuario) {
+            // Hacer la consulta de verificación de inicio de sesión, asumimos que devuleve un resultado booleano dependiendo de si se logró iniciar sesión o no
+
+            let resultado = true;
+                
+            if (resultado) {
+                localStorage.setItem("logged_in", "true");
+                localStorage.setItem("user_id", usuario.id);
+                localStorage.setItem("user_type", usuario.rango);
+                
+                window.location.href = "index.html";
+            } else {
+                let input = document.getElementById("input");
+                if (!input.classList.contains("error")) {
+                    document.getElementById("input").classList.add("error");
+                }
+                document.querySelector(".errorMessage").innerText = "Contraseña incorrecta";
+            }
+        }
+
+        function eliminarError(elemento) {
+            if (elemento.value != "") {
+                if (input.classList.contains("error")) {
+                    document.getElementById("input").classList.remove("error");
+                    document.querySelector(".errorMessage").innerText = "";
+                }
+            }
+        }
+
+        function backToUserSelect(usuarios) {
+            document.getElementById("content").children[3].remove();
+            document.getElementById("content").children[2].remove();
+            document.getElementById("content").children[1].remove();
+
+            document.getElementById("text").innerText = "¿Quién usará el sistema?";
+            document.getElementById("content").innerHTML += "<div class='usersContainer'></div>";
+
+            usuarios.forEach(element => {
+                document.querySelector(".usersContainer").innerHTML += "<button class='userCard' id='" + element.id + "'><div class='userImageContainer'><img src='img/users/" + element.imagen + "' alt='Users profile picture' class='userImg'></div><p class='userName'>" + element.nombre + "</p></button>";
+            });
+
+            document.querySelectorAll(".userCard").forEach(element => {
+                element.addEventListener("click", e => {
+                    selectUser(usuarios, element.id);
+                });
+            });
+        }
+
+    </script>
+</body>
+</html>

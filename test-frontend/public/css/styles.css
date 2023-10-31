@@ -1,0 +1,1683 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    --main: #EDEDED;
+    --secondary: #D9D9D9;
+    --border: #CACACA;
+    
+    --main-hover: #E4E4E4;
+    --secondary-hover: #C7C7C7;
+    --border-hover: #B7B7B7;
+
+    --text: #282828;
+    --text-brighter: #414141;
+    --error: #ff4949;
+
+    --dashboardMargin: 76px;
+    --dashboardContent: 80%;
+
+    margin: 0px;
+    padding: 0px;
+
+    min-height: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    max-width: 100%;
+
+    font-family: 'Inter', sans-serif;
+    background: var(--main);
+}
+
+.screenCover {
+    margin: 0px;
+    padding: 0px;
+
+    min-height: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    max-width: 100%;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    background: var(--main);
+    opacity: 1;
+    z-index: 100;
+
+    animation: fadeOut 2s cubic-bezier(0.215, 0.61, 0.355, 1) 0s 1 normal forwards;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+        display: block;
+    }
+    100% {
+        opacity: 0;
+        display: none;
+    }
+}
+
+.pageContainer {
+    margin: 0px;
+    padding: 0px;
+
+    min-height: 100vh;
+    max-height: 100vh;
+    min-width: 100%;
+    max-width: 100%;
+
+    position: relative;
+    top: 0;
+    left: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: var(--main);
+}
+
+.contentContainer {
+    margin: 0px;
+    padding: 0px;
+
+    min-width: 100%;
+    max-width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20vh;
+
+    text-align: center;
+}
+
+.contentContainerBox {
+    margin: 0px;
+    padding: 0px;
+
+    min-width: 100%;
+    max-width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6vh;
+
+    text-align: center;
+
+    opacity: 0;
+
+    animation: fadeIn 2s cubic-bezier(0.215, 0.61, 0.355, 1) 0s 1 normal forwards;
+}
+
+.cajaContainer {
+    margin: 0px;
+    padding: 20px;
+
+    min-width: 30%;
+    max-width: 30%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+
+    border: 2px solid var(--border-hover);
+    border-radius: 8px;
+}
+
+.cajaContainer p {
+    font-weight: 700;
+    font-size: max(12px, 0.85vw);
+}
+
+.registrosContainer {
+    margin: 0px;
+    padding: 0px;
+
+    min-width: 100%;
+    max-width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.registrosLadoIzquierdo {
+    margin: 0px;
+    padding: 0px;
+
+    min-width: 70%;
+    max-width: 70%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+
+    color: var(--border-hover)
+}
+
+.registrosLadoDerecho {
+    margin: 0px;
+    padding: 0px;
+
+    min-width: 30%;
+    max-width: 30%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.registrosLadoIzquierdo p, .registrosLadoDerecho p {
+    margin: 10px 0px;
+    padding: 0px;
+}
+
+.registrosLadoIzquierdo .horizontalLine, .registrosLadoDerecho .horizontalLine {
+    margin: 10px;
+    padding: 0px;
+
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 2px;
+    max-height: 2px;
+
+    background: var(--border-hover);
+}
+
+.presentationTitle {
+    margin: 0px;
+    padding: 0px;
+
+    color: var(--text);
+    font-size: max(16px, 3vw);
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.inputContainer {
+    margin: 0px;
+    padding: 0px;
+
+    min-width: 40%;
+    max-width: 40%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+
+    opacity: 0;
+
+    animation: fadeIn 2s cubic-bezier(0.215, 0.61, 0.355, 1) 0s 1 normal forwards;
+}
+
+.errorMessage {
+    color: var(--error);
+    font-size: 0.8vw;
+}
+
+.passwordInput {
+    margin: 0px;
+    padding: 1vw 1.5vw;
+
+    min-width: 100%;
+    max-width: 100%;
+
+    outline: none;
+    border: 2px solid var(--border);
+    border-radius: 24px;
+    background: var(--main);
+
+    color: var(--text);
+    font-size: max(12px, 1vw);
+
+    transition: border 350ms cubic-bezier(0.215, 0.61, 0.355, 1), background 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.passwordInput:focus {
+    border: 2px solid var(--border-hover);
+    background: var(--main-hover);
+}
+
+.passwordInput:hover {
+    border: 2px solid var(--border-hover);
+    background: var(--main-hover);
+
+    transition: border 350ms cubic-bezier(0.215, 0.61, 0.355, 1), background 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.passwordInput.error {
+    border: 2px solid var(--error);
+
+    transition: border 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.passwordButton {
+    margin: 0px;
+    padding: 2vw;
+
+    min-width: 40%;
+    max-width: 40%;
+
+    outline: none;
+    border: 2px solid var(--border);
+    border-radius: 32px;
+    background: var(--main);
+
+    color: var(--text);
+    font-size: max(14px, 1.2vw);
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+
+    opacity: 0;
+
+    transition: border 350ms cubic-bezier(0.215, 0.61, 0.355, 1), background 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+    animation: fadeIn 2s cubic-bezier(0.215, 0.61, 0.355, 1) 0s 1 normal forwards;
+}
+
+.passwordButton:hover {
+    border: 2px solid var(--border-hover);
+    background: var(--main-hover);
+
+    transition: border 350ms cubic-bezier(0.215, 0.61, 0.355, 1), background 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.backButton {
+    margin: 50px;
+    padding: 0px;
+
+    position: absolute;
+    top: 0px;
+    left: 0px;
+
+    outline: none;
+    border: none;
+    background: transparent;
+
+    color: var(--text);
+
+    opacity: 0;
+
+    transform: scale(1);
+
+    transition: transform 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+    animation: fadeIn 2s cubic-bezier(0.215, 0.61, 0.355, 1) 0s 1 normal forwards;
+}
+
+.backButton:hover {
+    transform: scale(1.2);
+
+    transition: transform 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.containerDashboard {
+    margin: 0px;
+    padding: 0px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    height: clamp(100svh, 100svh, 100svh);
+    width: clamp(100vw, 100vw, 100vw);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    overflow-x: hidden;
+    
+}
+
+.dashboardNav {
+    margin: 0px 0px 0px var(--dashboardMargin);
+    padding: 0px 40px 0px 0px;
+
+    
+
+    height: clamp(60px, 60px, 60px);
+    width: calc(100% - var(--dashboardMargin));
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    border-bottom: 1px solid var(--border);
+    background-color: var(--main);
+
+    z-index: 100;
+
+    transition: margin 350ms cubic-bezier(0.215, 0.61, 0.355, 1), width 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardNavLeftContainer {
+    margin: 0px;
+    padding: 0px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    height: clamp(60px, 60px, 60px);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.dashboardNavButton {
+    margin: 0px 20px;
+    padding: 10px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    outline: none;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+
+    color: var(--text);
+}
+
+.dashboardNavH1 {
+    margin: 0px;
+    padding: 0px;
+
+    font-size: 20px;
+    color: var(--text)
+}
+
+.dashboardNavigationButton {
+    margin: 0px 0px 0px 10px;
+    padding: 10px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    height: clamp(60px, 60px, 60px);
+
+    outline: none;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+
+    font-weight: 600;
+    color: var(--text);
+
+    transform: scale(1);
+
+    transition: transform 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardNavigationButton:hover {
+    transform: scale(1.1);
+
+    transition: transform 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardSidebar {
+    margin: 0px 0px 0px calc(var(--dashboardMargin) - 268px);
+    padding: 0px;
+
+    position: absolute;
+    top: 0px;
+    left: 0px;
+
+    height: clamp(100svh, 100svh, 100svh);
+    width: clamp(268px, 268px, 268px);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    background-color: var(--text);
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+
+    overflow: hidden;
+    z-index: 1000;
+
+    transition: margin 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardSidebar button {
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    width: clamp(100%, 100%, 100%);
+
+    outline: none;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+
+    font-family: 'Open Sans', sans-serif;
+
+    transition: background 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardSidebar button:hover {
+    background: var(--text-brighter);
+
+    transition: background 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.sidebarDivHeader {
+    margin: 30px 0px;
+    padding: 0px;
+
+    position: relative;
+    top: 0px;
+    left: calc(var(--dashboardContent));
+
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    transition: left 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.sidebarDivHeader i {
+    margin: 0px;
+    padding: 0px;
+
+    color: var(--main);
+}
+
+.sidebarDivHeader p {
+    margin: 0px 0px 0px 8%;
+    padding: 0px;
+
+    opacity: 0;
+
+    font-weight: 700;
+    color: var(--main);
+
+    transition: opacity 300ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.sidebarDiv {
+    margin: 15px 0px;
+    padding: 0px;
+
+    position: relative;
+    top: 0px;
+    left: calc(var(--dashboardContent) - 1%);
+
+    width: 80%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    transition: left 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.sidebarDiv i {
+    margin: 0px;
+    padding: 0px;
+
+    width: 20%;
+
+    color: var(--main);
+}
+
+.sidebarDiv p {
+    margin: 0px 0px 0px 8%;
+    padding: 0px;
+
+    opacity: 0;
+
+    font-weight: 700;
+    color: var(--main);
+
+    transition: opacity 300ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardContent {
+    margin: 0px 0px 0px 76px;
+    padding: 20px;
+
+    position: relative;
+    top: 0px;
+    left: 1px;
+
+    width: calc(100% - 76px);
+    min-height: max(calc(100svh - 60px), calc(100% - 60px));
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 20px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    background-color: var(--secondary);
+
+    transition: margin 350ms cubic-bezier(0.215, 0.61, 0.355, 1), width 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.userImageContainerSidebar {
+    margin: 0px;
+    padding: 0px;
+
+    min-width: 32px;
+    max-width: 32px;
+    min-height: 32px;
+    max-height: 32px;
+
+    border-radius: 50%;
+
+    overflow: hidden;
+}
+
+.userImgSidebar {
+    margin: 0 auto;
+
+    min-height: 32px;
+    max-height: 32px;
+}
+
+.dashboardHeaderContainer {
+    margin: 0px;
+    padding: 0px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 100%;
+    max-width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dashboardHeaderContainer h2, .dashboardHeaderContainer h5 {
+    margin: 0px;
+    padding: 0px;
+
+    font-weight: 500;
+}
+
+.dashboardHeaderContainer h2 {
+    color: var(--text);
+}
+
+.dashboardHeaderContainer h5 {
+    color: var(--text-brighter);
+}
+
+.dashboardRowContainer {
+    margin: 0px;
+    padding: 0px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 100%;
+    max-width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    border-radius: 8px;
+}
+
+.dashboard25Container, .dashboard50Container, .dashboard75Container, .dashboard100Container, .dashboard252Container {
+    margin: 0px;
+    padding: 0px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-height: 224px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--main);
+
+    overflow-x: hidden;
+}
+
+.dashboard25Container {
+    min-width: calc(25% - 10px);
+    max-width: calc(25% - 10px);
+}
+
+.dashboard252Container {
+    min-width: calc(25% - 5px);
+    max-width: calc(25% - 5px);
+}
+
+.dashboard50Container {
+    min-width: calc(50% - 10px);
+    max-width: calc(50% - 10px);
+    min-height: 480px;
+}
+
+.dashboard75Container {
+    min-width: calc(75% - 10px);
+    max-width: calc(75% - 10px);
+}
+
+.dashboard100Container {
+    min-width: calc(100%);
+    max-width: calc(100%);
+}
+
+.dashboardSlotsContainer {
+    margin: 0px 20px;
+    padding: 5px 20px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 222px;
+    max-height: 222px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dashboardSlotsContainerResponsive {
+    margin: 0px 20px;
+    padding: 5px 20px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 100%;
+    max-width: 100%;
+
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.dashboardSlotsContainerResponsive div {
+    margin: 0px;
+    padding: 5px 10px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 80%;
+    max-width: 80%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    outline: none;
+    cursor: pointer;
+    border: none;
+
+    font-size: 15px;
+}
+
+.dashboardSlotsContainerResponsive div p {
+    margin: 0px;
+    padding: 15px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 800;
+
+    min-width: 50%;
+    max-width: 50%;
+
+    text-align: center;
+}
+
+.dashboardSlotsContainerResponsive button {
+    margin: 0px;
+    padding: 5px 10px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 100%;
+    max-width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    outline: none;
+    cursor: pointer;
+    border: none;
+
+    text-align: center;
+}
+
+.dashboardSlotsContainerResponsive button p {
+    margin: 0px;
+    padding: 15px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    background: var(--main);
+
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 800;
+
+    min-width: 40%;
+    max-width: 40%;
+
+    border-top: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
+
+    transition: background 350ms cubic-bezier(0.215, 0.61, 0.355, 1), border 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardSlotsContainerResponsive button:hover p {
+    background: var(--main-hover);
+    border-top: 2px solid var(--border-hover);
+    border-bottom: 2px solid var(--border-hover);
+
+    transition: background 350ms cubic-bezier(0.215, 0.61, 0.355, 1), border 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardSlotsContainerResponsive button p:first-child {
+    border-left: 2px solid var(--border);
+
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+
+    transition: border 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardSlotsContainerResponsive button:hover p:first-child {
+    border-left: 2px solid var(--border-hover);
+
+    transition: border 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardSlotsContainerResponsive button p:last-child {
+    border-right: 2px solid var(--border);
+
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+
+    transition: border 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardSlotsContainerResponsive button:hover p:last-child {
+    border-right: 2px solid var(--border);
+
+    transition: border 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardRowSlots {
+    margin: 0px;
+    padding: 0px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 54px;
+    max-height: 54px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5%;
+
+    box-shadow: none;
+}
+
+.dashboardColumnSlots {
+    margin: 0px;
+    padding: 0px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 22px;
+    max-width: 22px;
+    min-height: 54px;
+    max-height: 54px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.dashboardCarButton {
+    margin: 0px;
+    padding: 0px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 22px;
+    max-width: 22px;
+    min-height: 48px;
+    max-height: 48px;
+    background: var(--secondary);
+
+    outline: none;
+    border: none;
+    cursor: pointer;
+
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.dashboardRowSlots .dashboardColumnSlots .dashboardCarButton ~ p {
+    margin: 0px;
+    padding: 6px;
+
+    position: absolute;
+    top: 15px;
+    left: auto;
+
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    background: var(--main);
+
+    color: var(--text);
+    font-size: 10px;
+    font-weight: 800;
+    user-select: none;
+
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+
+    opacity: 0;
+
+    text-align: center;
+
+    transition: opacity 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardRowSlots .dashboardColumnSlots .dashboardCarButton p {
+    margin: 0px;
+    padding: 0px;
+
+    position: absolute;
+    top: 15px;
+    left: auto;
+
+    color: var(--text);
+    font-size: 10px;
+    font-weight: 800;
+    user-select: none;
+
+    opacity: 1;
+
+    text-align: center;
+
+    transition: opacity 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardRowSlots .dashboardColumnSlots .dashboardCarButton:has(img) p {
+    margin: 0px;
+    padding: 0px;
+
+    position: absolute;
+    top: 15px;
+    left: auto;
+
+    color: var(--main);
+    font-size: 10px;
+    font-weight: 600;
+
+    z-index: 10;
+    opacity: 1;
+
+    text-align: center;
+
+    transition: opacity 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardRowSlots .dashboardColumnSlots:hover .dashboardCarButton:has(img) .autoImage {
+    opacity: 0;
+
+    transition: opacity 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardRowSlots .dashboardColumnSlots:hover .dashboardCarButton:has(img) p {
+    opacity: 0;
+
+    transition: opacity 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardRowSlots .dashboardColumnSlots:hover .dashboardCarButton:has(img) ~ p {
+    opacity: 1;
+
+    transition: opacity 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardRowSlots .dashboardColumnSlots:nth-child(odd) .dashboardCarButton img {
+    transform: rotate(0deg);
+}
+
+.dashboardRowSlots .dashboardColumnSlots:nth-child(even) .dashboardCarButton img {
+    transform: rotate(180deg);
+}
+
+.dashboardRowSlots:first-child {
+    box-shadow: inset 0px 3px 0px 0px var(--border-hover);
+}
+
+.dashboardRowSlots:first-child .dashboardColumnSlots .dashboardCarButton {
+    padding: 5px 0px;
+
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.dashboardRowSlots:first-child .dashboardColumnSlots .dashboardCarButton img {
+    transform: rotate(0deg);
+}
+
+.dashboardRowSlots:last-child {
+    box-shadow: inset 0px -3px 0px 0px var(--border-hover);
+}
+
+.dashboardRowSlots:last-child .dashboardColumnSlots .dashboardCarButton {
+    padding: 5px 0px;
+
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.dashboardRowSlots:last-child .dashboardColumnSlots .dashboardCarButton img {
+    transform: rotate(180deg);
+}
+
+.autoImage {
+    margin: 0px;
+    padding: 0px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 20px;
+    max-width: 20px;
+
+    user-select: none;
+
+    opacity: 1;
+
+    transition: opacity 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+
+.userImageContainerContent {
+    margin: 0px;
+    padding: 0px;
+
+    min-width: 128px;
+    max-width: 128px;
+    min-height: 128px;
+    max-height: 128px;
+
+    border-radius: 50%;
+
+    overflow: hidden;
+}
+
+.userImgContent {
+    margin: 0 auto;
+
+    min-height: 128px;
+    max-height: 128px;
+}
+
+.autoFull {
+    margin: 100px;
+    padding: 0px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 200px;
+    max-width: 200px;
+}
+
+.searchCarResults,  .searchCarResults2{
+    margin: 0px;
+    padding: 40px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.searchCarResults {
+    min-width: calc(100% - 400px);
+    max-width: calc(100% - 400px);
+}
+
+.searchCarResults2 {
+    min-width: calc(100%);
+    max-width: calc(100%);
+    min-height: 300px;
+    min-height: 300px;
+}
+
+.searchCarResults p, .searchCarResults2 p {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.searchCarResults div, .searchCarResults2 div {
+    margin: 0px;
+    padding: 5px 10px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 80%;
+    max-width: 80%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+}
+
+.searchCarResults div p, .searchCarResults2 div p {
+    margin: 0px;
+    padding: 15px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    background: var(--text);
+
+    color: var(--main);
+    font-size: 12px;
+    font-weight: 800;
+
+    min-width: 40%;
+    max-width: 40%;
+}
+
+.searchCarResults div p:first-child, .searchCarResults2 div p:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.searchCarResults div p:last-child, .searchCarResults2 div p:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.dashboardIngresosInputsContainer {
+    margin: 10px 0px;
+    padding: 1vw;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 70%;
+    max-width: 70%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+
+    border: 2px solid var(--border);
+    border-radius: 8px;
+
+    text-align: center;
+}
+
+.dashboardIngresoInputContainer {
+    margin: 0px;
+    padding: 5px 15px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 100%;
+    max-width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    border: 2px solid var(--text);
+    border-radius: 8px;
+    background-color: var(--text);
+
+    text-align: start;
+}
+
+.dashboardIngresoInputContainer p {
+    margin: 0px 0px 0px 10px;
+
+    min-width: 50%;
+    max-width: 50%;
+
+    font-size: max(14px, 0.8vw);
+    color: var(--main);
+}
+
+.dashboardIngresoInputContainer input, .dashboardIngresoInputContainer select {
+    margin: 0px;
+    padding: 2px 7px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 50%;
+    max-width: 50%;
+
+    outline: none;
+
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: var(--main);
+
+    font-size: max(14px, 0.8vw);
+    color: var(--text);
+
+    transition: background 350ms cubic-bezier(0.215, 0.61, 0.355, 1), border 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardIngresoInputContainer input:focus {
+    border: 2px solid var(--border-hover);
+    border-radius: 8px;
+    background: var(--secondary);
+
+    transition: background 350ms cubic-bezier(0.215, 0.61, 0.355, 1), border 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardIngresoButton {
+    margin: 30px 0px;
+    padding: 0.5vw;
+
+    min-width: 40%;
+    max-width: 40%;
+
+    outline: none;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: var(--main);
+
+    color: var(--text);
+    font-size: max(12px, 0.8vw);
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+
+    transition: border 350ms cubic-bezier(0.215, 0.61, 0.355, 1), background 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardIngresoButton:hover {
+    border: 2px solid var(--border-hover);
+    background: var(--main-hover);
+
+    transition: border 350ms cubic-bezier(0.215, 0.61, 0.355, 1), background 350ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.dashboardModifyContainer {
+    margin: 0px;
+    padding: 40px 0px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 300px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+}
+
+.dashboardRegistrosContainer {
+    margin: 40px;
+    padding: 0px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 80%;
+    max-width: 80%;
+    min-height: 75vh;
+    max-height: 75vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+
+    overflow-y: scroll;
+}
+
+.dashboardRegistro {
+    margin: 0px;
+    padding: 20px 40px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 100%;
+    max-width: 100%;
+
+    border: 2px solid var(--border);
+    border-radius: 16px;
+
+    color: var(--text);
+    font-size: max(14px, 1vw);
+    font-weight: 700;
+}
+
+.dashboardRegistro i {
+    margin-right: 0.5vw;
+}
+
+.dashboardUsersContainer, .dashboardPreciosContainer, .dashboardHoursContainer {
+    margin: 30px 0px;
+    padding: 0px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 70%;
+    max-width: 70%;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.dashboardUsersContainerHeader, .dashboardPreciosContainerHeader, .dashboardHoursContainerHeader {
+    margin: 0px;
+    padding: 0px 10px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 100%;
+    max-width: 100%;
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    font-weight: 800;
+    font-size: max(12px, 0.8vw);
+}
+
+.dashboardUsersContainerBody, .dashboardPreciosContainerBody, .dashboardHoursContainerBody {
+    margin: 0px;
+    padding: 5px 10px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 100%;
+    max-width: 100%;
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    border: 2px solid var(--border);
+    border-radius: 8px;
+
+    font-weight: 700;
+    font-size: max(10px, 0.6vw);
+}
+
+.dashboardUsersContainerHeader p, .dashboardUsersContainerBody p {
+    min-width: 16%;
+    max-width: 16%;
+}
+
+.dashboardHoursContainerHeader p, .dashboardHoursContainerBody p {
+    min-width: 22%;
+    max-width: 22%;
+}
+
+.dashboardHoursContainerHeader p:first-child, .dashboardHoursContainerBody p:first-child {
+    min-width: 12%;
+    max-width: 12%;
+}
+
+.dashboardUsersContainerHeader p:last-child, .dashboardUsersContainerBody p:last-child {
+    min-width: 20%;
+    max-width: 20%;
+}
+
+.dashboardPreciosContainerHeader p, .dashboardPreciosContainerBody p {
+    min-width: 30%;
+    max-width: 30%;
+}
+
+.dashboardPreciosContainerHeader p:first-child, .dashboardPreciosContainerBody p:first-child {
+    min-width: 10%;
+    max-width: 10%;
+}
+
+#campoSelect2 {
+    display: none;
+}
+
+.dashboardPlatasContainer {
+    margin: 0px;
+    padding: 0px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 90%;
+    max-width: 90%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.dashboardPlataContainer {
+    margin: 0px;
+    padding: 40px;
+
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    min-width: 35%;
+    max-width: 35%;
+
+    border: 2px solid var(--border);
+    border-radius: 8px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    color: var(--text);
+    font-weight: 800;
+}
+
+@media (width < 964px) {
+    .pageContainer {
+        align-items: flex-start;
+    }
+
+    .presentationTitle {
+        margin-top: 20px;
+        padding: 0px;
+    
+        color: var(--text);
+        font-size: max(16px, 3vw);
+    }
+
+    .cajaContainer {
+        min-width: 90%;
+        max-width: 90%;
+    }
+
+    .inputContainer {
+        min-width: 90%;
+        max-width: 90%;
+    }
+
+    .passwordButton {
+        margin-bottom: 20px;
+
+        min-width: 90%;
+        max-width: 90%;
+    }
+
+    .dashboardNavigationButton.admin {
+        display: none;
+    }
+
+    .dashboard25Container, .dashboard50Container, .dashboard75Container, .dashboard100Container {
+        min-width: 100%;
+        max-width: 100%;
+
+        min-height: auto;
+    }
+
+    .dashboardRowContainer {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .dashboardSlotsContainer {
+        display: none;
+    }
+
+    .dashboardSlotsContainerResponsive {
+        display: flex;
+    }
+
+    .searchCarResults, .searchCarResults2 {
+        min-width: 90%;
+        max-width: 90%;
+    }
+
+    .autoFull {
+        display: none;
+    }
+
+    .dashboardIngresosInputsContainer {
+        min-width: 90%;
+        max-width: 90%;
+    }
+
+    .dashboardIngresoInputContainer {
+        flex-direction: column;
+        gap: 10px;
+
+        text-align: center;
+    }
+
+    .dashboardIngresoInputContainer p {
+        margin: 0px;
+
+        min-width: 90%;
+        max-width: 90%;
+    }
+    
+    .dashboardIngresoInputContainer input, .dashboardIngresoInputContainer select {
+        min-width: 90%;
+        max-width: 90%;
+    }
+
+    .dashboardIngresoButton {
+        min-width: 90%;
+        max-width: 90%;
+    }
+
+    .dashboardUsersContainer {
+        min-width: 90%;
+        max-width: 90%;
+
+        overflow-x: scroll;
+        overflow-y: hidden;
+    }
+
+    .dashboardPreciosContainer {
+        min-width: 90%;
+        max-width: 90%;
+    }
+
+    .dashboardUsersContainerHeader, .dashboardUsersContainerBody, .dashboardPreciosContainerHeader, .dashboardPreciosContainerBody {
+        justify-content: flex-start;
+        border: none;
+    }
+
+    .dashboardUsersContainerHeader p, .dashboardUsersContainerBody p {
+        min-width: 45%;
+        max-width: none;
+    }
+
+    .dashboardUsersContainerHeader p:last-child, .dashboardUsersContainerBody p:last-child {
+        min-width: 45%;
+        max-width: none;
+    }
+
+    .dashboardRegistrosContainer {
+        min-width: 90%;
+        max-width: 90%;
+        min-height: 50vh;
+        max-height: 50vh;
+    }
+}
+
+/* Modal */
+.modal {
+    display: flex;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Modal Content */
+  .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+  }
+  
+  /* Close Button */
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  /* Text inside Modal */
+  .modal-content p {
+    margin: 0;
+  }
+  

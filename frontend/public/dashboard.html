@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Fonts (Inter Family) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
+    <script src="https://kit.fontawesome.com/e739b303fd.js" crossorigin="anonymous"></script>
+
+    <!-- Personal Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Dashboard</title>
+</head>
+<body>
+    <div class="containerDashboard">
+        <nav class="dashboardNav">
+            <div class="dashboardNavLeftContainer">
+                <button class="dashboardNavButton" onclick="openSidebar(this);"><i class="fa-solid fa-bars fa-2xl"></i></button>
+                <h1 class="dashboardNavH1">Itoshi SAE</h1>
+                <button class="dashboardNavigationButton" onclick="loadContent('inicio', usuario)">Inicio</button>
+            </div>
+        </nav>
+        <aside class="dashboardSidebar" onmouseover="openSidebarHover(this);" onmouseout="closeSidebarHover(this);">
+            <div class="sidebarDivHeader"><div class='userImageContainerSidebar'><img src='' alt='Users profile picture' class='userImgSidebar'></div><p></p></div>
+        </aside>
+        <div class="dashboardContent">
+        </div>
+    </div>
+</body>
+<script>
+    var sidebarOpen = false;
+
+    function loadUserInfo() {
+        // Otra vez, como no tenemos conexión con back-end saco 2 tipos de usuarios en base al login trucho que hice, dependiendo el rol jerárquico, lo que se tendría que hacer es en base a la id hacer una consulta que busque la información de esa ID para crear un objeto con los datos del usuario logueado
+        switch (localStorage.getItem("user_type")) {
+            case "0":
+                var usuario = {
+                    "id" : "0",
+                    "nombre" : "Jefe",
+                    "imagen" : "fotoUsuarioPrueba1.png",
+                    "rango" : "0"
+                }
+                break;
+            case "1":
+                var usuario = {
+                    "id" : "1",
+                    "nombre" : "Empleado 1",
+                    "imagen" : "fotoUsuarioPrueba2.jpeg",
+                    "rango" : "1"
+                }
+                break;
+        }
+
+        let sidebarContainer = document.querySelector(".dashboardSidebar");
+
+        switch (usuario.rango) {
+            case "1":
+                usuario.rol = "Empleado";
+                sidebarContainer.innerHTML += '<button class="ingresos"><div class="sidebarDiv"><i class="fa-solid fa-car fa-xl"></i><p>Ingresos</p></div></button><button class="retiros"><div class="sidebarDiv"><i class="fa-solid fa-money-bill fa-xl"></i><p>Retiros</p></div></button><button class="caja"><div class="sidebarDiv"><i class="fa-solid fa-cash-register fa-xl"></i><p>Cerrar Caja</p></div></button>';
+
+                document.querySelector(".dashboardNav").innerHTML += '<button class="dashboardNavigationButton admin">Acceso de Administrador</button>';
+                break;
+            case "0":
+                usuario.rol = "Jefe";
+                sidebarContainer.innerHTML += '<button class="usuarios"><div class="sidebarDiv"><i class="fa-solid fa-user fa-xl"></i><p>Usuarios</p></div></button><button class="horarios"><div class="sidebarDiv"><i class="fa-solid fa-clock fa-xl""></i><p>Horarios</p></div></button><button class="ingresos"><div class="sidebarDiv"><i class="fa-solid fa-car fa-xl"></i><p>Ingresos</p></div></button><button class="registros"><div class="sidebarDiv"><i class="fa-solid fa-receipt fa-xl"></i><p>Registros</p></div></button><button class="precios"><div class="sidebarDiv"><i class="fa-solid fa-tag fa-xl"></i><p>Precios</p></div></button><button class="retiros"><div class="sidebarDiv"><i class="fa-solid fa-money-bill fa-xl"></i><p>Retiros</p></div></button>';
+
+                if (localStorage.getItem("first_open") == "true") {
+                    sidebarContainer.innerHTML += '<button class="ciclo"><div class="sidebarDiv"><i class="fa-solid fa-clock fa-xl"></i><p>Iniciar Ciclo</p></div></button>';
+                } else {
+                    if (localStorage.getItem("previous_user") == "none") {
+                        sidebarContainer.innerHTML += '<button class="caja"><div class="sidebarDiv"><i class="fa-solid fa-cash-register fa-xl"></i><p>Cerrar Caja</p></div></button>';
+                    } else {
+                        sidebarContainer.innerHTML += '<button onclick="logout();"><div class="sidebarDiv"><i class="fa-solid fa-right-from-bracket fa-xl"></i><p>Cerrar Sesión</p></div></button>';
+                    }
+                }
+                
+                break;
+        }
+
+        let p = document.querySelector(".dashboardSidebar").children[0].children[1];
+        let img = document.querySelector(".userImgSidebar");
+
+        p.innerText = usuario.nombre;
+        img.src = "img/users/" + usuario.imagen;
+
+        añadirFuncionalidad(usuario);
+        loadContent("inicio", usuario);
+
+        return (usuario);
+    }
+
+    function añadirFuncionalidad(usuario) {
+        document.querySelectorAll(".usuarios").forEach(element => {
+            element.addEventListener("click", e => {
+                loadContent("usuarios", usuario);
+            });
+        });
+
+        document.querySelectorAll(".horarios").forEach(element => {
+            element.addEventListener("click", e => {
+                loadContent("horarios", usuario);
+            });
+        });
+
+        document.querySelectorAll(".ingresos").forEach(element => {
+            element.addEventListener("click", e => {
+                loadContent("ingresos", usuario);
+            });
+        });
+
+        document.querySelectorAll(".registros").forEach(element => {
+            element.addEventListener("click", e => {
+                loadContent("registros", usuario);
+            });
+        });
+
+        document.querySelectorAll(".precios").forEach(element => {
+            element.addEventListener("click", e => {
+                loadContent("precios", usuario);
+            });
+        });
+
+        document.querySelectorAll(".retiros").forEach(element => {
+            element.addEventListener("click", e => {
+                loadContent("retiros", usuario);
+            });
+        });
+
+        document.querySelectorAll(".caja").forEach(element => {
+            element.addEventListener("click", e => {
+                cerrarCaja();
+            });
+        });
+
+        document.querySelectorAll(".ciclo").forEach(element => {
+            element.addEventListener("click", e => {
+                iniciarCiclo();
+            });
+        });
+
+        document.querySelectorAll(".admin").forEach(element => {
+            element.addEventListener("click", e => {
+                loginAdmin(usuario);
+            });
+        });
+    }
+
+    function iniciarCiclo() {
+        localStorage.setItem("logged_in", "false");
+        localStorage.setItem("user_id", "none");
+        localStorage.setItem("user_type", "none");
+        localStorage.setItem("previous_user", "none");
+        localStorage.setItem("first_open", "false");
+
+        window.location.href = "index.html";
+    }
+
+    function cerrarCaja() {
+        localStorage.setItem("logged_in", "false");
+        localStorage.setItem("user_id", "none");
+        localStorage.setItem("user_type", "none");
+        localStorage.setItem("previous_user", "none");
+        localStorage.setItem("first_open", "false");
+
+        window.location.href = "index.html";
+    }
+
+    function loginAdmin(usuario) {
+        localStorage.setItem("logged_in", "false");
+        localStorage.setItem("user_id", "none");
+        localStorage.setItem("user_type", "none");
+        localStorage.setItem("previous_user", usuario.id);
+
+        window.location.href = "index.html";
+    }
+
+    function openSidebarHover(element) {
+        if (sidebarOpen == false) {
+            let body = element.parentElement.parentElement;
+            body.style.setProperty('--dashboardMargin', '268px');
+            body.style.setProperty('--dashboardContent', '9%');
+
+            document.querySelector(".sidebarDivHeader").children[1].style.opacity = 1;
+            document.querySelectorAll(".sidebarDiv").forEach(element => {
+                let p = element.children[1].style.opacity = 1;
+            });
+        }
+    }
+
+    function closeSidebarHover(element) {
+        if (sidebarOpen == false) {
+            let body = element.parentElement.parentElement;
+            body.style.setProperty('--dashboardMargin', '76px');
+            body.style.setProperty('--dashboardContent', '80%');
+
+            document.querySelector(".sidebarDivHeader").children[1].style.opacity = 0;
+            document.querySelectorAll(".sidebarDiv").forEach(element => {
+                let p = element.children[1].style.opacity = 0;
+            });
+        }
+    }
+
+    function openSidebar(element) {
+        let body = element.parentElement.parentElement.parentElement;
+
+        switch (sidebarOpen) {
+            case true:
+                body.style.setProperty('--dashboardMargin', '76px');
+                body.style.setProperty('--dashboardContent', '80%');
+
+                document.querySelector(".sidebarDivHeader").children[1].style.opacity = 0;
+                document.querySelectorAll(".sidebarDiv").forEach(element => {
+                    let p = element.children[1].style.opacity = 0;
+                });
+
+                sidebarOpen = false;
+                break;
+            case false:
+                body.style.setProperty('--dashboardMargin', '268px');
+                body.style.setProperty('--dashboardContent', '9%');
+
+                document.querySelector(".sidebarDivHeader").children[1].style.opacity = 1;
+                document.querySelectorAll(".sidebarDiv").forEach(element => {
+                    let p = element.children[1].style.opacity = 1;
+                });
+
+                sidebarOpen = true;
+                break;
+        }
+        
+    }
+
+    function logout() {
+        if (localStorage.getItem("previous_user") == "none") {
+            localStorage.setItem("logged_in", "false");
+            localStorage.setItem("user_id", "none");
+            localStorage.setItem("user_type", "none");
+            localStorage.setItem("previous_user", "none");
+
+            window.location.href = "index.html";
+        } else {
+            // Hacer consulta para averiguar información sobre el usuario anterior con localStorage.getItem("previous_user") teniendo en cuenta que esto devuelve su ID
+
+            let usuario = {"id": 1,"nombre": "Empleado 1","imagen": "fotoUsuarioPrueba2.jpeg", "rango": 1}
+            localStorage.setItem("logged_in", "true");
+            localStorage.setItem("user_id", usuario.id);
+            localStorage.setItem("user_type", usuario.rango);
+            localStorage.setItem("previous_user", "none");
+
+            window.location.href = "index.html";
+        }
+    }
+
+    function loadContent(location, usuario) {
+        let container = document.querySelector(".dashboardContent");
+        container.innerHTML = "";
+
+        switch (location) {
+            case "inicio":
+                container.innerHTML = '<div class="dashboardHeaderContainer"><h2>Dashboard</h2><h5>Inicio / Dashboard</h5></div><div class="dashboardRowContainer"><div class="dashboard25Container"><div class="userImageContainerContent"><img src="img/users/fotoUsuarioPrueba1.png" alt="Users profile picture" class="userImgContent"></div><p>Empleado 1</p></div><div class="dashboard75Container"><div class="dashboardSlotsContainer"><div class="dashboardRowSlots"></div><div class="dashboardRowSlots"></div><div class="dashboardRowSlots"></div></div><div class="dashboardSlotsContainerResponsive"><div><p>Espacio</p><p>Patente</p></div></div></div></div><div class="dashboardRowContainer"><div class="dashboard100Container"><div class="dashboardRowContainer"><img src="img/site/autoCompleto.png" alt="" class="autoFull"><div class="searchCarResults"><p>Haga click en un auto para obtener su información</p></div></div></div></div>';
+
+                cargarEspacios();
+                break;
+            case "usuarios":
+                container.innerHTML = '<div class="dashboardHeaderContainer"><h2>Usuarios</h2><h5>Usuarios / Dashboard</h5></div><div class="dashboardRowContainer"><div class="dashboard100Container"><div class="dashboardUsersContainer"><div class="dashboardUsersContainerHeader"><p>DNI</p><p>Nombre</p><p>Apellido</p><p>Contraseña</p><p>Email</p><p>Número de Teléfono</p></div></div></div></div><div class="dashboardRowContainer"><div class="dashboard100Container"><h3>Ingresar usuarios</h3><div class="dashboardIngresosInputsContainer"><div class="dashboardIngresoInputContainer"><p>DNI</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Nombre</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Apellido</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Contraseña</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Email</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Número de Teléfono</p><input type="text"></div></div><button class="dashboardIngresoButton">INGRESAR</button></div></div><div class="dashboardRowContainer"><div class="dashboard50Container"><h3>Modificar usuarios</h3><div class="dashboardIngresosInputsContainer"><div class="dashboardIngresoInputContainer"><p>DNI</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Campo a modificar</p><select id="select"><option value="0" selected>Nombre</option><option value="1">Apellido</option><option value="2">Contraseña</option><option value="3">Email</option><option value="4">Número de Teléfono</option></select></div><div class="dashboardIngresoInputContainer"><p>Nuevo valor</p><input type="text"></div></div><button class="dashboardIngresoButton">MODIFICAR</button></div><div class="dashboard50Container"><h3>Eliminar usuarios</h3><div class="dashboardIngresosInputsContainer"><div class="dashboardIngresoInputContainer"><p>DNI</p><input type="text"></div></div><button class="dashboardIngresoButton">ELIMINAR</button></div></div>';
+
+                cargarUsuarios();
+                break;
+            case "horarios":
+                container.innerHTML = '<div class="dashboardHeaderContainer"><h2>Horarios</h2><h5>Horarios / Dashboard</h5></div><div class="dashboardRowContainer"><div class="dashboard100Container"><div class="dashboardHoursContainer"><div class="dashboardHoursContainerHeader"><p>id</p><p>Usuario</p><p>Día</p><p>Inicio</p><p>Finalización</p></div></div></div></div><div class="dashboardRowContainer"><div class="dashboard100Container"><h3>Ingresar horarios</h3><div class="dashboardIngresosInputsContainer"><div class="dashboardIngresoInputContainer"><p>Usuario</p><select id="usersSelect"></select></div><div class="dashboardIngresoInputContainer"><p>Día</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Horario de Inicio</p><input type="time"></div><div class="dashboardIngresoInputContainer"><p>Horario de Finalización</p><input type="time"></div></div><button class="dashboardIngresoButton">INGRESAR</button></div></div><div class="dashboardRowContainer"><div class="dashboard50Container"><h3>Modificar horarios</h3><div class="dashboardIngresosInputsContainer"><div class="dashboardIngresoInputContainer"><p>Id de horario a modificar</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Campo a modificar</p><select id="select" onchange="actualizarCampoHorario(this);"><option value="0" selected>Usuario</option><option value="1">Día</option><option value="2">Inicio</option><option value="3">Finalización</option></select></div><div class="dashboardIngresoInputContainer"><p>Nuevo valor</p><select id="usersSelect2"></select></div></div><button class="dashboardIngresoButton">MODIFICAR</button></div><div class="dashboard50Container"><h3>Eliminar horarios</h3><div class="dashboardIngresosInputsContainer"><div class="dashboardIngresoInputContainer"><p>Id de horario a eliminar</p><input type="text"></div></div><button class="dashboardIngresoButton">ELIMINAR</button></div></div>';
+
+                cargarHorarios();
+                break;
+            case "ingresos":
+                switch (usuario.rango) {
+                    case "0":
+                        container.innerHTML = '<div class="dashboardHeaderContainer"><h2>Ingresos</h2><h5>Ingresos / Dashboard</h5></div><div class="dashboardRowContainer"><div class="dashboard100Container"><h3>Ingresar vehículos</h3><div class="dashboardIngresosInputsContainer"><div class="dashboardIngresoInputContainer"><p>Tipo de Ingreso</p><select onchange="actualizarForm()" id="select"><option value="1" selected>Hora</option><option value="2">Estadía</option></select></div><div class="dashboardIngresoInputContainer"><p>Números de la Patente</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Espacio del Estacionamiento</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Clase de Vehículo</p><select><option>Clase 1</option><option selected>Clase 2</option></select></div><div class="dashboardIngresoInputContainer"><p>Tipo de Pago</p><select id="tipoDePagoSelect"><option value="1" selected>Hora</option><option value="2">Estadía</option></select></div><div class="dashboardIngresoInputContainer"><p>Forma de Pago</p><select><option value="0" selected>Efectivo</option><option value="1">Débito</option></select></div><div class="dashboardIngresoInputContainer"><p>¿Realizó un pago completo?</p><select onchange="actualizarPago()" id="pago"><option value="1" selected>Si</option><option value="0">No</option></select></div><div class="dashboardIngresoInputContainer pagoMostrar" style="display: none;"><p>Monto de la seña</p><input type="text"></div></div><button class="dashboardIngresoButton">INGRESAR</button></div></div><div class="dashboardRowContainer"><div class="dashboard100Container"><div class="dashboardSlotsContainer"><div class="dashboardRowSlots"></div><div class="dashboardRowSlots"></div><div class="dashboardRowSlots"></div></div><div class="dashboardSlotsContainerResponsive"><div><p>Espacio</p><p>Patente</p></div></div></div></div><div class="dashboardRowContainer"><div class="dashboard50Container"><div class="dashboardRowContainer"><div class="dashboardModifyContainer"><h3>Modificar Campos</h3><div class="dashboardIngresosInputsContainer"><div class="dashboardIngresoInputContainer"><p>Posición del Estacionamiento</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Tipo de ingreso</p><select id="estadiaSelect" onchange="actualizarSelect(this);"><option value="0" selected>Hora</option><option value="1">Estadía</option></select></div><div class="dashboardIngresoInputContainer"><p>Campo a modificar</p><select id="campoSelect1" onchange="actualizarCampoValorHora(this)"><option value="0" selected>Patente</option><option value="1">Espacio</option><option value="2">Clase</option></select><select id="campoSelect2" onchange="actualizarCampoValorEstadia(this)"><option value="0" selected>Patente</option><option value="1">Espacio</option><option value="2">Marca</option><option value="3">Días</option><option value="4">Hotel</option></select></div><div class="dashboardIngresoInputContainer"><p>Nuevo valor</p><input type="text"></div></div><button class="dashboardIngresoButton">MODIFICAR</button></div></div></div><div class="dashboard50Container"><div class="dashboardRowContainer"><div class="searchCarResults2"><p>Haga click en un auto para obtener su información</p></div></div></div></div><div class="dashboardRowContainer"><div class="dashboard50Container"><div class="dashboardModifyContainer"><h3>Egresar vehículo</h3><div class="dashboardIngresosInputsContainer"><div class="dashboardIngresoInputContainer"><p>Posición del Estacionamiento</p><input type="text"></div></div><button class="dashboardIngresoButton">EGRESAR</button></div></div><div class="dashboard50Container"><div class="dashboardModifyContainer"><h3>Interfaz de Pago Tardío</h3><div class="dashboardIngresosInputsContainer"><div class="dashboardIngresoInputContainer"><p>Posición del Estacionamiento</p><input type="text"></div></div><button class="dashboardIngresoButton">PAGAR</button></div></div>';
+
+                        cargarEspacios();
+                        cargarPromociones();
+                        break;
+                    case "1":
+                        container.innerHTML = '<div class="dashboardHeaderContainer"><h2>Ingresos</h2><h5>Ingresos / Dashboard</h5></div><div class="dashboardRowContainer"><div class="dashboard100Container"><h3>Ingresar vehículos</h3><div class="dashboardIngresosInputsContainer"><div class="dashboardIngresoInputContainer"><p>Tipo de Ingreso</p><select onchange="actualizarForm()" id="select"><option value="1" selected>Hora</option><option value="2">Estadía</option></select></div><div class="dashboardIngresoInputContainer"><p>Números de la Patente</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Espacio del Estacionamiento</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Clase de Vehículo</p><select><option>Clase 1</option><option selected>Clase 2</option></select></div><div class="dashboardIngresoInputContainer"><p>Tipo de Pago</p><select id="tipoDePagoSelect"><option value="1" selected>Hora</option><option value="2">Estadía</option></select></div><div class="dashboardIngresoInputContainer"><p>Forma de Pago</p><select><option value="0" selected>Efectivo</option><option value="1">Débito</option></select></div><div class="dashboardIngresoInputContainer"><p>¿Realizó un pago completo?</p><select onchange="actualizarPago()" id="pago"><option value="1" selected>Si</option><option value="0">No</option></select></div><div class="dashboardIngresoInputContainer pagoMostrar" style="display: none;"><p>Monto de la seña</p><input type="text"></div></div><button class="dashboardIngresoButton">INGRESAR</button></div></div><div class="dashboardRowContainer"><div class="dashboard100Container"><div class="dashboardSlotsContainer"><div class="dashboardRowSlots"></div><div class="dashboardRowSlots"></div><div class="dashboardRowSlots"></div></div><div class="dashboardSlotsContainerResponsive"><div><p>Espacio</p><p>Patente</p></div></div></div></div><div class="dashboardRowContainer"><div class="dashboard50Container"><div class="dashboardRowContainer"><div class="dashboardModifyContainer"><h3>Modificar Patentes</h3><div class="dashboardIngresosInputsContainer"><div class="dashboardIngresoInputContainer"><p>Posición del Estacionamiento</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Nueva Patente</p><input type="text"></div></div><button class="dashboardIngresoButton">MODIFICAR</button></div></div></div><div class="dashboard50Container"><div class="dashboardRowContainer"><div class="searchCarResults2"><p>Haga click en un auto para obtener su información</p></div></div></div></div><div class="dashboardRowContainer"><div class="dashboard50Container"><div class="dashboardModifyContainer"><h3>Egresar vehículo</h3><div class="dashboardIngresosInputsContainer"><div class="dashboardIngresoInputContainer"><p>Posición del Estacionamiento</p><input type="text"></div></div><button class="dashboardIngresoButton">EGRESAR</button></div></div><div class="dashboard50Container"><div class="dashboardModifyContainer"><h3>Interfaz de Pago Tardío</h3><div class="dashboardIngresosInputsContainer"><div class="dashboardIngresoInputContainer"><p>Posición del Estacionamiento</p><input type="text"></div></div><button class="dashboardIngresoButton">PAGAR</button></div></div>';
+
+                        cargarEspacios();
+                        cargarPromociones();
+                        break;
+                }
+                break;
+            case "registros":
+                container.innerHTML += '<div class="dashboardHeaderContainer"><h2>Registros</h2><h5>Registros / Dashboard</h5></div><div class="dashboardRowContainer"><div class="dashboard100Container"><div class="dashboardRegistrosContainer"></div></div></div>';
+
+                cargarRegistros();
+                break;
+            case "precios":
+                container.innerHTML += '<div class="dashboardHeaderContainer"><h2>Precios</h2><h5>Precios / Dashboard</h5></div><div class="dashboardRowContainer"><div class="dashboard100Container"><div class="dashboardPreciosContainer"><div class="dashboardPreciosContainerHeader"><p>Id</p><p>Nombre</p><p>Valor</p><p>Tipo</p></div></div></div></div><div class="dashboardRowContainer"><div class="dashboard100Container"><h3>Ingresar promociones</h3><div class="dashboardIngresosInputsContainer"><div class="dashboardIngresoInputContainer"><p>Nombre</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Precio</p><input type="text"></div></div><button class="dashboardIngresoButton">INGRESAR</button></div></div><div class="dashboardRowContainer"><div class="dashboard50Container"><h3>Modificar precios</h3><div class="dashboardIngresosInputsContainer"><div class="dashboardIngresoInputContainer"><p>Id de precio a modificar</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Nuevo valor</p><input type="text"></div></div><button class="dashboardIngresoButton">MODIFICAR</button></div><div class="dashboard50Container"><h3>Eliminar promociones</h3><div class="dashboardIngresosInputsContainer"><div class="dashboardIngresoInputContainer"><p>Id de promoción a eliminar</p><input type="text"></div></div><button class="dashboardIngresoButton">ELIMINAR</button></div></div>';
+
+                cargarPrecios();
+                break;
+            case "retiros":
+                container.innerHTML += '<div class="dashboardHeaderContainer"><h2>Retiros</h2><h5>Retiros / Dashboard</h5></div><div class="dashboardRowContainer"><div class="dashboard100Container"><div class="dashboardPlatasContainer"><div class="dashboardPlataContainer"><p>Dinero en Caja</p><p>$42323</p></div></div></div></div><div class="dashboardRowContainer"><div class="dashboard100Container"><h3>Realizar retiros</h3><div class="dashboardIngresosInputsContainer"><div class="dashboardIngresoInputContainer"><p>Valor</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Contraseña del Jefe</p><input type="text"></div><button class="dashboardIngresoButton">RETIRAR</button></div></div>';
+
+                break;
+        }
+    }
+
+    function cargarHorarios() {
+        // Hacer consulta para cargar horarios
+
+        let horarios = []
+        horarios.push({"id":"0","usuario":"Jefe","dia":"normal","inicio":"2:00","finalizacion":"10:00"});
+        horarios.push({"id":"1","usuario":"Empleado 1","dia":"normal","inicio":"10:00","finalizacion":"18:00"});
+        horarios.push({"id":"2","usuario":"Empleado 2","dia":"normal","inicio":"18:00","finalizacion":"2:00"});
+
+        for (let i = 0; i < horarios.length; i++) {
+            document.querySelector(".dashboardHoursContainer").innerHTML += "<div class='dashboardHoursContainerBody'><p>" + horarios[i].id + "</p><p>" + horarios[i].usuario + "</p><p>" + horarios[i].dia + "</p><p>" + horarios[i].inicio + "</p><p>" + horarios[i].finalizacion + "</p></div>";
+        }
+
+        // Hacer consulta para cargar usuarios
+
+        let usuarios = []
+        usuarios.push({"dni":"0","nombre":"Santiago","apellido":"Ramallo","contraseña":"LookAtTheWalls","email":"santiagoylisa@hotmail.com","telefono":"+54-9-11-3121-6664"});
+        usuarios.push({"dni":"1","nombre":"Franco","apellido":"Rodríguez Gallipoli","contraseña":"WANANASHE","email":"santiagoylisa@hotmail.com","telefono":"+54-9-11-3121-6664"});
+        usuarios.push({"dni":"2","nombre":"Nahuel","apellido":"Giménez","contraseña":"darkuslauts","email":"santiagoylisa@hotmail.com","telefono":"+54-9-11-3121-6664"});
+        usuarios.push({"dni":"3","nombre":"Lautaro","apellido":"Rizzo","contraseña":"chorizzo","email":"santiagoylisa@hotmail.com","telefono":"+54-9-11-3121-6664"});
+
+        for (let i = 0; i < usuarios.length; i++) {
+            document.getElementById("usersSelect").innerHTML += "<option value='" + usuarios[i].dni + "'>" + usuarios[i].nombre + "</option>";
+            document.getElementById("usersSelect2").innerHTML += "<option value='" + usuarios[i].dni + "'>" + usuarios[i].nombre + "</option>";
+        }
+    }
+
+    function cargarPromociones() {
+        // Hacer consulta para cargar precios, ignorando los primeros 2 que siempre van a ser hora y estadía
+
+        let promos = []
+        promos.push({"nombre":"Promoción 1","valor":"2700"});
+        promos.push({"nombre":"Promoción 2","valor":"26500"});
+
+        let lastValue = parseInt(document.getElementById("tipoDePagoSelect").children[(document.getElementById("tipoDePagoSelect").children.length - 1)].value);
+
+        for (let i = 0; i < promos.length; i++) {
+            document.getElementById("tipoDePagoSelect").innerHTML += '<option value="' + (lastValue + (i + 1)) + '">' + promos[i].nombre + '</option>';
+        }
+    }
+
+    function cargarPrecios() {
+        // Hacer consulta para cargar precios
+
+        let precios = []
+        precios.push({"id":"0","nombre":"Hora","valor":"3000","tipo":"base"});
+        precios.push({"id":"1","nombre":"Estadía","valor":"30000","tipo":"base"});
+        precios.push({"id":"2","nombre":"Promoción 1","valor":"2700","tipo":"promocion"});
+        precios.push({"id":"3","nombre":"Promoción 2","valor":"26500","tipo":"promocion"});
+
+        for (let i = 0; i < precios.length; i++) {
+            document.querySelector(".dashboardPreciosContainer").innerHTML += "<div class='dashboardPreciosContainerBody'><p>" + precios[i].id + "</p><p>" + precios[i].nombre + "</p><p>" + precios[i].valor + "</p><p>" + precios[i].tipo + "</p></div>";
+        }
+    }
+
+    function cargarUsuarios() {
+        // Hacer consulta para cargar usuarios
+
+        let usuarios = []
+        usuarios.push({"dni":"0","nombre":"Santiago","apellido":"Ramallo","contraseña":"LookAtTheWalls","email":"santiagoylisa@hotmail.com","telefono":"+54-9-11-3121-6664"});
+        usuarios.push({"dni":"0","nombre":"Franco","apellido":"Rodríguez Gallipoli","contraseña":"WANANASHE","email":"santiagoylisa@hotmail.com","telefono":"+54-9-11-3121-6664"});
+        usuarios.push({"dni":"0","nombre":"Nahuel","apellido":"Giménez","contraseña":"darkuslauts","email":"santiagoylisa@hotmail.com","telefono":"+54-9-11-3121-6664"});
+        usuarios.push({"dni":"0","nombre":"Lautaro","apellido":"Rizzo","contraseña":"chorizzo","email":"santiagoylisa@hotmail.com","telefono":"+54-9-11-3121-6664"});
+
+        for (let i = 0; i < usuarios.length; i++) {
+            document.querySelector(".dashboardUsersContainer").innerHTML += "<div class='dashboardUsersContainerBody'><p>" + usuarios[i].dni + "</p><p>" + usuarios[i].nombre + "</p><p>" + usuarios[i].apellido + "</p><p>" + usuarios[i].contraseña + "</p><p>" + usuarios[i].email + "</p><p>" + usuarios[i].telefono + "</p></div>";
+        }
+    }
+
+    function cargarRegistros() {
+        //Hacer consulta para cargar registros, nótese que si es el jefe debe poder ver todos los registros, si es un empleado se tienen que poder ver sólo los realizados por el mismo durante su ciclo
+
+        let registros = []
+        registros.push({"id":"0","fecha":"2023-10-02 09:34:21","usuario":"Jefe","tipo":"0","tabla":"usuarios"});
+        registros.push({"id":"1","fecha":"2023-10-02 09:47:35","usuario":"Jefe","tipo":"0","tabla":"usuarios"});
+        registros.push({"id":"2","fecha":"2023-10-02 09:59:13","usuario":"Jefe","tipo":"0","tabla":"usuarios"});
+        registros.push({"id":"3","fecha":"2023-10-02 10:03:25","usuario":"Jefe","tipo":"0","tabla":"usuarios"});
+            
+
+        for (let i = 0; i < registros.length; i++) {
+
+            let hora = registros[i].fecha.substr(registros[i].fecha.length - 8);
+            let fecha = registros[i].fecha.substr(0, 10);
+            let palabra = "";
+            let icon = "";
+            switch (registros[i].tipo) {
+                case "0":
+                    palabra = "añadió";
+                    icon = "fa-plus";
+                    break;
+                case "1":
+                    palabra = "modificó";
+                    icon = "fa-pen-to-square";
+                    break;
+                case "2":
+                    palabra = "eliminó";
+                    icon = "fa-trash";
+                    break;
+            }
+
+            document.querySelector(".dashboardRegistrosContainer").innerHTML += "<div class='dashboardRegistro'><i class='fa-solid " + icon + "'></i>" + registros[i].usuario + " " + palabra + " un registro en la tabla " + registros[i].tabla + " a las " + hora + " del " + fecha + "</div>";
+        }
+    }
+
+    function cargarEspacios() {
+        //Hacer consulta de todos los espacios del estacionamiento
+
+        let espacios = {
+            0:{
+                "id":"0",
+                "nombre":"1",
+                "patente":"NULL"
+            },
+            1:{
+                "id":"1",
+                "nombre":"2",
+                "patente":"232"
+            },
+            2:{
+                "id":"2",
+                "nombre":"3",
+                "patente":"NULL"
+            },
+            3:{
+                "id":"3",
+                "nombre":"4",
+                "patente":"NULL"
+            },
+            4:{
+                "id":"4",
+                "nombre":"5",
+                "patente":"NULL"
+            },
+            5:{
+                "id":"5",
+                "nombre":"6",
+                "patente":"NULL"
+            },
+            6:{
+                "id":"6",
+                "nombre":"7",
+                "patente":"NULL"
+            },
+            7:{
+                "id":"7",
+                "nombre":"8",
+                "patente":"NULL"
+            },
+            8:{
+                "id":"8",
+                "nombre":"9a",
+                "patente":"NULL"
+            },
+            9:{
+                "id":"9",
+                "nombre":"9b",
+                "patente":"NULL"
+            },
+            10:{
+                "id":"10",
+                "nombre":"9c",
+                "patente":"NULL"
+            },
+            11:{
+                "id":"11",
+                "nombre":"10",
+                "patente":"NULL"
+            },
+            12:{
+                "id":"12",
+                "nombre":"11",
+                "patente":"NULL"
+            },
+            13:{
+                "id":"13",
+                "nombre":"12",
+                "patente":"NULL"
+            },
+            14:{
+                "id":"14",
+                "nombre":"13",
+                "patente":"NULL"
+            },
+            15:{
+                "id":"15",
+                "nombre":"14",
+                "patente":"NULL"
+            },
+            16:{
+                "id":"16",
+                "nombre":"15",
+                "patente":"NULL"
+            },
+            17:{
+                "id":"17",
+                "nombre":"16",
+                "patente":"643"
+            },
+            18:{
+                "id":"18",
+                "nombre":"17",
+                "patente":"NULL"
+            },
+            19:{
+                "id":"19",
+                "nombre":"18",
+                "patente":"NULL"
+            },
+            20:{
+                "id":"20",
+                "nombre":"19",
+                "patente":"453"
+            },
+            21:{
+                "id":"21",
+                "nombre":"20",
+                "patente":"NULL"
+            },
+            22:{
+                "id":"22",
+                "nombre":"21",
+                "patente":"NULL"
+            },
+            23:{
+                "id":"23",
+                "nombre":"22",
+                "patente":"NULL"
+            },
+            24:{
+                "id":"24",
+                "nombre":"23",
+                "patente":"NULL"
+            },
+            25:{
+                "id":"25",
+                "nombre":"24",
+                "patente":"NULL"
+            },
+            26:{
+                "id":"26",
+                "nombre":"25",
+                "patente":"NULL"
+            },
+            27:{
+                "id":"27",
+                "nombre":"26",
+                "patente":"NULL"
+            },
+            28:{
+                "id":"28",
+                "nombre":"27",
+                "patente":"NULL"
+            },
+            29:{
+                "id":"29",
+                "nombre":"28",
+                "patente":"NULL"
+            },
+            30:{
+                "id":"30",
+                "nombre":"29",
+                "patente":"NULL"
+            },
+            31:{
+                "id":"31",
+                "nombre":"30",
+                "patente":"NULL"
+            },
+            32:{
+                "id":"32",
+                "nombre":"31",
+                "patente":"267"
+            },
+            33:{
+                "id":"33",
+                "nombre":"32",
+                "patente":"NULL"
+            },
+            34:{
+                "id":"34",
+                "nombre":"33",
+                "patente":"NULL"
+            },
+            35:{
+                "id":"35",
+                "nombre":"34",
+                "patente":"NULL"
+            },
+            36:{
+                "id":"36",
+                "nombre":"35",
+                "patente":"NULL"
+            },
+            37:{
+                "id":"37",
+                "nombre":"36",
+                "patente":"NULL"
+            },
+            38:{
+                "id":"38",
+                "nombre":"36a",
+                "patente":"NULL"
+            },
+            39:{
+                "id":"39",
+                "nombre":"36b",
+                "patente":"NULL"
+            },
+            40:{
+                "id":"40",
+                "nombre":"37",
+                "patente":"NULL"
+            },
+            41:{
+                "id":"41",
+                "nombre":"38",
+                "patente":"NULL"
+            },
+            42:{
+                "id":"42",
+                "nombre":"39",
+                "patente":"NULL"
+            },
+            43:{
+                "id":"43",
+                "nombre":"40",
+                "patente":"NULL"
+            },
+            44:{
+                "id":"44",
+                "nombre":"41",
+                "patente":"NULL"
+            },
+            45:{
+                "id":"45",
+                "nombre":"42",
+                "patente":"NULL"
+            },
+            46:{
+                "id":"46",
+                "nombre":"43",
+                "patente":"NULL"
+            },
+            47:{
+                "id":"47",
+                "nombre":"44",
+                "patente":"NULL"
+            },
+            48:{
+                "id":"48",
+                "nombre":"45",
+                "patente":"NULL"
+            },
+            49:{
+                "id":"49",
+                "nombre":"46",
+                "patente":"NULL"
+            },
+            50:{
+                "id":"50",
+                "nombre":"47",
+                "patente":"NULL"
+            },
+            51:{
+                "id":"51",
+                "nombre":"48",
+                "patente":"NULL"
+            },
+            52:{
+                "id":"52",
+                "nombre":"49",
+                "patente":"739"
+            },
+            53:{
+                "id":"53",
+                "nombre":"50",
+                "patente":"446"
+            },
+            54:{
+                "id":"54",
+                "nombre":"51",
+                "patente":"235"
+            },
+            55:{
+                "id":"55",
+                "nombre":"52",
+                "patente":"NULL"
+            },
+            56:{
+                "id":"56",
+                "nombre":"53",
+                "patente":"NULL"
+            },
+            57:{
+                "id":"57",
+                "nombre":"54",
+                "patente":"NULL"
+            },
+            58:{
+                "id":"58",
+                "nombre":"55",
+                "patente":"NULL"
+            },
+            59:{
+                "id":"59",
+                "nombre":"56",
+                "patente":"NULL"
+            },
+            60:{
+                "id":"60",
+                "nombre":"57",
+                "patente":"NULL"
+            },
+            61:{
+                "id":"61",
+                "nombre":"58",
+                "patente":"NULL"
+            },
+            62:{
+                "id":"62",
+                "nombre":"59",
+                "patente":"NULL"
+            },
+            63:{
+                "id":"63",
+                "nombre":"60",
+                "patente":"NULL"
+            },
+            64:{
+                "id":"64",
+                "nombre":"61",
+                "patente":"740"
+            },
+            65:{
+                "id":"65",
+                "nombre":"62",
+                "patente":"NULL"
+            },
+            66:{
+                "id":"66",
+                "nombre":"63",
+                "patente":"NULL"
+            },
+            67:{
+                "id":"67",
+                "nombre":"64",
+                "patente":"NULL"
+            },
+            68:{
+                "id":"68",
+                "nombre":"65",
+                "patente":"NULL"
+            },
+            69:{
+                "id":"69",
+                "nombre":"66",
+                "patente":"NULL"
+            },
+            70:{
+                "id":"70",
+                "nombre":"67",
+                "patente":"NULL"
+            },
+            71:{
+                "id":"71",
+                "nombre":"68",
+                "patente":"NULL"
+            },
+            72:{
+                "id":"72",
+                "nombre":"69",
+                "patente":"517"
+            },
+            73:{
+                "id":"73",
+                "nombre":"70",
+                "patente":"NULL"
+            },
+            74:{
+                "id":"74",
+                "nombre":"71",
+                "patente":"NULL"
+            },
+            75:{
+                "id":"75",
+                "nombre":"72",
+                "patente":"NULL"
+            },
+            76:{
+                "id":"76",
+                "nombre":"73",
+                "patente":"NULL"
+            },
+
+            77:{
+                "id":"77",
+                "nombre":"74",
+                "patente":"NULL"
+            },
+            78:{
+                "id":"78",
+                "nombre":"75",
+                "patente":"NULL"
+            },
+            79:{
+                "id":"79",
+                "nombre":"76",
+                "patente":"NULL"
+            },
+            80:{
+                "id":"80",
+                "nombre":"77",
+                "patente":"NULL"
+            },
+            81:{
+                "id":"81",
+                "nombre":"78",
+                "patente":"357"
+            },
+            82:{
+                "id":"82",
+                "nombre":"79",
+                "patente":"873"
+            },
+            83:{
+                "id":"83",
+                "nombre":"80",
+                "patente":"416"
+            },
+            84:{
+                "id":"84",
+                "nombre":"81",
+                "patente":"NULL"
+            },
+            85:{
+                "id":"85",
+                "nombre":"82",
+                "patente":"NULL"
+            },
+            86:{
+                "id":"86",
+                "nombre":"83",
+                "patente":"NULL"
+            },
+            87:{
+                "id":"87",
+                "nombre":"84",
+                "patente":"NULL"
+            },
+            88:{
+                "id":"88",
+                "nombre":"85",
+                "patente":"NULL"
+            },
+            89:{
+                "id":"89",
+                "nombre":"86",
+                "patente":"NULL"
+            },
+            90:{
+                "id":"90",
+                "nombre":"87",
+                "patente":"NULL"
+            },
+            91:{
+                "id":"91",
+                "nombre":"88",
+                "patente":"NULL"
+            },
+            92:{
+                "id":"92",
+                "nombre":"89",
+                "patente":"NULL"
+            },
+            93:{
+                "id":"93",
+                "nombre":"90",
+                "patente":"592"
+            },
+            94:{
+                "id":"94",
+                "nombre":"91",
+                "patente":"NULL"
+            },
+            95:{
+                "id":"95",
+                "nombre":"92",
+                "patente":"NULL"
+            },
+            96:{
+                "id":"96",
+                "nombre":"93",
+                "patente":"NULL"
+            },
+            97:{
+                "id":"97",
+                "nombre":"94",
+                "patente":"NULL"
+            }
+        }
+
+        for (let i = 0; i < 38; i++) {
+            if (espacios[i].patente == "NULL") {
+                document.querySelector(".dashboardSlotsContainer").children[0].innerHTML += '<div class="dashboardColumnSlots" id="' + espacios[i].nombre + '""><button class="dashboardCarButton" onclick="buscarAuto(this)"><p>' + espacios[i].nombre + '</p></button></div>';
+            } else {
+                document.querySelector(".dashboardSlotsContainer").children[0].innerHTML += '<div class="dashboardColumnSlots" id="' + espacios[i].nombre + '""><button class="dashboardCarButton" onclick="buscarAuto(this)"><p>' + espacios[i].nombre + '</p><img src="img/site/auto.png" alt="" class="autoImage"></button><p>' + espacios[i].patente + '</p></div>';
+            }
+        }
+
+        for (let i = 97; i > 69; i = i - 1) {
+            if (espacios[i].patente == "NULL") {
+                document.querySelector(".dashboardSlotsContainer").children[1].innerHTML += '<div class="dashboardColumnSlots" id="' + espacios[i].nombre + '""><button class="dashboardCarButton" onclick="buscarAuto(this)"><p>' + espacios[i].nombre + '</p></button></div>';
+            } else {
+                document.querySelector(".dashboardSlotsContainer").children[1].innerHTML += '<div class="dashboardColumnSlots" id="' + espacios[i].nombre + '""><button class="dashboardCarButton" onclick="buscarAuto(this)"><p>' + espacios[i].nombre + '</p><img src="img/site/auto.png" alt="" class="autoImage"></button><p>' + espacios[i].patente + '</p></div>';
+            }
+        }
+
+        for (let i = 69; i > 37; i = i - 1) {
+            if (espacios[i].patente == "NULL") {
+                document.querySelector(".dashboardSlotsContainer").children[2].innerHTML += '<div class="dashboardColumnSlots" id="' + espacios[i].nombre + '""><button class="dashboardCarButton" onclick="buscarAuto(this)"><p>' + espacios[i].nombre + '</p></button></div>';
+            } else {
+                document.querySelector(".dashboardSlotsContainer").children[2].innerHTML += '<div class="dashboardColumnSlots" id="' + espacios[i].nombre + '""><button class="dashboardCarButton" onclick="buscarAuto(this)"><p>' + espacios[i].nombre + '</p><img src="img/site/auto.png" alt="" class="autoImage"></button><p>' + espacios[i].patente + '</p></div>';
+            }
+        }
+
+        for (let i = 0; i < 98; i++) {
+            if (espacios[i].patente != "NULL") {
+                document.querySelector(".dashboardSlotsContainerResponsive").innerHTML += '<button onclick="buscarAutoResponsive(this)"><p>' + espacios[i].nombre + '</p><p>' + espacios[i].patente + '</p></button>';
+            }
+        }
+
+
+    }
+
+    function buscarAuto(elemento) {
+        if(elemento.parentElement.getElementsByTagName('img').length > 0) {
+            let espacio = elemento.parentElement.children[0].children[0].innerText;
+
+            //Con espacio hacer una consulta a los espacios del estacionamiento para averiguar la id del vehículo en el mismo
+
+            let vehiculo = {
+                "id":"1",
+                "patente": elemento.parentElement.children[1].innerText,
+                "tipo": "Estadía",
+                "pago": "Sí"
+            }
+
+            if (document.querySelector(".searchCarResults") != null) {
+                document.querySelector(".searchCarResults").innerHTML = "<div><p>Id</p><p>" + vehiculo.id + "</p></div><div><p>Patente</p><p>" + vehiculo.patente + "</p></div><div><p>Tipo</p><p>" + vehiculo.tipo + "</p></div><div><p>¿Pagó?</p><p>" + vehiculo.pago + "</p></div>";
+            } else {
+                document.querySelector(".searchCarResults2").innerHTML = "<div><p>Id</p><p>" + vehiculo.id + "</p></div><div><p>Patente</p><p>" + vehiculo.patente + "</p></div><div><p>Tipo</p><p>" + vehiculo.tipo + "</p></div><div><p>¿Pagó?</p><p>" + vehiculo.pago + "</p></div>";
+            }
+
+            
+        }
+    }
+
+    function buscarAutoResponsive(elemento) {
+        let espacio = elemento.children[0].innerText;
+
+        //Con espacio hacer una consulta a los espacios del estacionamiento para averiguar la id del vehículo en el mismo
+
+        let vehiculo = {
+            "id":"1",
+            "patente": elemento.children[1].innerText,
+            "tipo": "Estadía",
+            "pago": "Sí"
+        }
+
+        let elementoResultados = document.querySelector(".searchCarResults");
+
+        elementoResultados.innerHTML = "<div><p>Id</p><p>" + vehiculo.id + "</p></div><div><p>Patente</p><p>" + vehiculo.patente + "</p></div><div><p>Tipo</p><p>" + vehiculo.tipo + "</p></div><div><p>¿Pagó?</p><p>" + vehiculo.pago + "</p></div>";
+        elementoResultados.scrollIntoView();
+    }
+
+    function actualizarForm() {
+        let selectValue = document.getElementById("select").value;
+
+        switch (selectValue) {
+            case "1":
+                document.querySelector(".dashboardIngresosInputsContainer").innerHTML = '<div class="dashboardIngresoInputContainer"><p>Tipo de Ingreso</p><select onchange="actualizarForm()" id="select"><option value="1" selected>Hora</option><option value="2">Estadía</option></select></div><div class="dashboardIngresoInputContainer"><p>Números de la Patente</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Espacio del Estacionamiento</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Clase de Vehículo</p><select><option>Clase 1</option><option selected>Clase 2</option></select></div><div class="dashboardIngresoInputContainer"><p>Tipo de Pago</p><select id="tipoDePagoSelect"><option value="1" selected>Hora</option><option value="2">Estadía</option></select></div><div class="dashboardIngresoInputContainer"><p>Forma de Pago</p><select><option value="0" selected>Efectivo</option><option value="1">Débito</option></select></div><div class="dashboardIngresoInputContainer"><p>¿Realizó un pago completo?</p><select onchange="actualizarPago()" id="pago"><option value="1" selected>Si</option><option value="0">No</option></select></div>';
+                break;
+            case "2":
+                document.querySelector(".dashboardIngresosInputsContainer").innerHTML = '<div class="dashboardIngresoInputContainer"><p>Tipo de Ingreso</p><select onchange="actualizarForm()" id="select"><option value="1">Hora</option><option value="2" selected>Estadía</option></select></div><div class="dashboardIngresoInputContainer"><p>Números de la Patente</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Espacio del Estacionamiento</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Marca del vehículo</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>Cantidad de días</p><input type="text"></div><div class="dashboardIngresoInputContainer"><p>¿Procede de un hotel?</p><select onchange="actualizarHotel()" id="hotel"><option value="1" selected>No</option><option value="0">Si</option></select></div><div class="dashboardIngresoInputContainer hotelMostrar" style="display: none;"><p>¿Cuál?</p><select><option value="0" selected>Hotel Luna Morena</option><option value="1">Hotel Demper</option></select></div><div class="dashboardIngresoInputContainer"><p>Tipo de Pago</p><select id="tipoDePagoSelect"><option value="1" selected>Hora</option><option value="2">Estadía</option></select></div><div class="dashboardIngresoInputContainer"><p>Forma de Pago</p><select><option value="0" selected>Efectivo</option><option value="1">Débito</option></select></div><div class="dashboardIngresoInputContainer"><p>¿Realizó un pago completo?</p><select onchange="actualizarPago()" id="pago"><option value="1" selected>Si</option><option value="0">No</option></select></div><div class="dashboardIngresoInputContainer pagoMostrar" style="display: none;"><p>Monto de la seña</p><input type="text"></div>';
+                break;
+        }
+
+        cargarPromociones();
+    }
+
+    function actualizarHotel(elemento) {
+        let selectValue = document.getElementById("hotel").value;
+
+        switch (selectValue) {
+            case "1":
+                document.querySelector(".hotelMostrar").style.display = "none";
+                break;
+            case "0":
+                document.querySelector(".hotelMostrar").style.display = "flex";
+                break;
+        }
+    }
+
+    function actualizarPago(elemento) {
+        let selectValue = document.getElementById("pago").value;
+
+        switch (selectValue) {
+            case "1":
+                document.querySelector(".pagoMostrar").style.display = "none";
+                break;
+            case "0":
+                document.querySelector(".pagoMostrar").style.display = "flex";
+                break;
+        }
+    }
+
+    function actualizarSelect(elemento) {
+        let selectValue = document.getElementById("estadiaSelect").value;
+        let destination = "";
+
+        switch (selectValue) {
+            case "1":
+                document.getElementById("campoSelect1").style.display = "none";
+                document.getElementById("campoSelect2").style.display = "block";
+
+                selectValue = document.getElementById("campoSelect2").value;
+                destination = elemento.parentElement.parentElement.children[(elemento.parentElement.parentElement.children.length - 1)];
+
+                destination.children[1].remove();
+
+                switch (selectValue) {
+                    case "0":
+                        destination.innerHTML += "<input type='text'>";
+                        break;
+                    case "1":
+                        destination.innerHTML += "<input type='text'>";
+                        break;
+                    case "2":
+                        destination.innerHTML += "<input type='text'>";
+                        break;
+                    case "3":
+                        destination.innerHTML += "<input type='text'>";
+                        break;
+                    case "4":
+                        destination.innerHTML += "<select><option value='0' selected>No</option><option value='1'>Hotel Luna Morena</option><option value='2'>Hotel Demper</option></select>";
+                        break;
+                }
+                break;
+            case "0":
+                document.getElementById("campoSelect1").style.display = "block";
+                document.getElementById("campoSelect2").style.display = "none";
+
+                selectValue = document.getElementById("campoSelect1").value;
+                destination = elemento.parentElement.parentElement.children[(elemento.parentElement.parentElement.children.length - 1)];
+
+                destination.children[1].remove();
+
+                switch (selectValue) {
+                    case "0":
+                        destination.innerHTML += "<input type='text'>";
+                        break;
+                    case "1":
+                        destination.innerHTML += "<input type='text'>";
+                        break;
+                    case "2":
+                        destination.innerHTML += "<select><option>Clase 1</option><option selected>Clase 2</option></select>";
+                        break;
+                }
+                break;
+        }
+    }
+
+    function actualizarCampoValorHora(elemento) {
+        let selectValue = document.getElementById("campoSelect1").value;
+        let destination = elemento.parentElement.parentElement.children[(elemento.parentElement.parentElement.children.length - 1)];
+
+        destination.children[1].remove();
+
+        switch (selectValue) {
+            case "0":
+                destination.innerHTML += "<input type='text'>";
+                break;
+            case "1":
+                destination.innerHTML += "<input type='text'>";
+                break;
+            case "2":
+                destination.innerHTML += "<select><option>Clase 1</option><option selected>Clase 2</option></select>";
+                break;
+        }
+    }
+
+    function actualizarCampoValorEstadia(elemento) {
+        let selectValue = document.getElementById("campoSelect2").value;
+        let destination = elemento.parentElement.parentElement.children[(elemento.parentElement.parentElement.children.length - 1)];
+
+        destination.children[1].remove();
+
+        switch (selectValue) {
+            case "0":
+                destination.innerHTML += "<input type='text'>";
+                break;
+            case "1":
+                destination.innerHTML += "<input type='text'>";
+                break;
+            case "2":
+                destination.innerHTML += "<input type='text'>";
+                break;
+            case "3":
+                destination.innerHTML += "<input type='text'>";
+                break;
+            case "4":
+                destination.innerHTML += "<select><option value='0' selected>No</option><option value='1'>Hotel Luna Morena</option><option value='2'>Hotel Demper</option></select>";
+                break;
+        }
+
+        console.log(destination);
+    }
+
+    function actualizarCampoHorario(elemento) {
+        let selectValue = document.getElementById("select").value;
+        let destination = elemento.parentElement.parentElement.children[(elemento.parentElement.parentElement.children.length - 1)];
+
+        destination.children[1].remove();
+
+        switch (selectValue) {
+            case "0":
+                destination.innerHTML += "<select id='usersSelect3'></select>";
+                // Hacer consulta para cargar usuarios
+
+                let usuarios = []
+                usuarios.push({"dni":"0","nombre":"Santiago","apellido":"Ramallo","contraseña":"LookAtTheWalls","email":"santiagoylisa@hotmail.com","telefono":"+54-9-11-3121-6664"});
+                usuarios.push({"dni":"0","nombre":"Franco","apellido":"Rodríguez Gallipoli","contraseña":"WANANASHE","email":"santiagoylisa@hotmail.com","telefono":"+54-9-11-3121-6664"});
+                usuarios.push({"dni":"0","nombre":"Nahuel","apellido":"Giménez","contraseña":"darkuslauts","email":"santiagoylisa@hotmail.com","telefono":"+54-9-11-3121-6664"});
+                usuarios.push({"dni":"0","nombre":"Lautaro","apellido":"Rizzo","contraseña":"chorizzo","email":"santiagoylisa@hotmail.com","telefono":"+54-9-11-3121-6664"});
+
+                for (let i = 0; i < usuarios.length; i++) {
+                    document.getElementById("usersSelect3").innerHTML += "<option value='" + usuarios[i].dni + "'>" + usuarios[i].nombre + "</option>";
+                }
+                break;
+            case "1":
+                destination.innerHTML += "<input type='text'>";
+                break;
+            case "2":
+                destination.innerHTML += "<input type='time'>";
+                break;
+            case "3":
+                destination.innerHTML += "<input type='time'>";
+                break;
+        }
+    }
+
+    var usuario = loadUserInfo();
+</script>
+</html>
