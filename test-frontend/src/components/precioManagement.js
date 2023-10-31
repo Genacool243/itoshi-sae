@@ -4,6 +4,7 @@ const PrecioManagement = () => {
   const [precios, setPrecios] = useState([]);
   const [selectedPrecioId, setSelectedPrecioId] = useState('');
   const [modifyPrecioId, setModifyPrecioId] = useState('');
+  const [selectedPrecioDetails, setSelectedPrecioDetails] = useState({});
   const [modalMessage, setModalMessage] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -18,17 +19,48 @@ const PrecioManagement = () => {
     try {
       const response = await fetch('http://localhost:5000/tbl_precios');
       const data = await response.json();
-      setPrecios(data);
+
+      let formattedData = [];
+      if (data && data.data) {
+        const precios = data.data;
+        formattedData = precios.map((precio) => {
+          return {
+            id_precio: precio.id_precio,
+            nombre_precio: precio.nombre_precio,
+            valor_precio: precio.valor_precio,
+            tipo_precio: precio.tipo_precio,
+          };
+        });
+      }
+
+      setPrecios(formattedData);
     } catch (error) {
       console.error('Error fetching precios:', error);
     }
   };
 
+  const fetchPrecioDetails = async (precioId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/tbl_precios/${precioId}`);
+      const data = await response.json();
+      if (data && data.length > 0) {
+        setSelectedPrecioDetails(data[0]); // Access the first element of the array
+        console.log(data[0]);
+      } else {
+        console.error('No price details found for the given price ID');
+      }
+    } catch (error) {
+      console.error('Error fetching price details:', error);
+    }
+  };
+  
+  
+
   const handleIngresarPrecio = async () => {
     const data = {
       nombre_precio: document.querySelector("#nombre-ingresar").value,
       valor_precio: document.querySelector("#valor-ingresar").value,
-      tipo_precio: document.querySelector("#tipo-ingresar").value,
+      tipo_precio: "promocion",
     };
 
     try {
@@ -43,7 +75,6 @@ const PrecioManagement = () => {
       const result = await response.json();
       setModalMessage(result.message);
       toggleModal();
-      fetchPrecios();
     } catch (error) {
       console.error('Error:', error);
     }
@@ -53,56 +84,43 @@ const PrecioManagement = () => {
     const data = {
       nombre_precio: document.querySelector("#nombre-modificar").value,
       valor_precio: document.querySelector("#valor-modificar").value,
-      tipo_precio: document.querySelector("#tipo-modificar").value,
     };
     console.log(data);
-  
+
     try {
       const response = await fetch(`http://localhost:5000/tbl_precios/${modifyPrecioId}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
-  
+
       const result = await response.json();
       setModalMessage(result.message);
       toggleModal();
-      fetchPrecios();
     } catch (error) {
       console.error('Error:', error);
     }
   };
-  
+
   const handleEliminarPrecio = async () => {
     try {
       const response = await fetch(`http://localhost:5000/tbl_precios/${selectedPrecioId}`, {
         method: 'DELETE'
       });
-  
+
       const result = await response.json();
       setModalMessage(result.message);
       toggleModal();
-      fetchPrecios();
     } catch (error) {
       console.error('Error:', error);
     }
   };
-  
+
 
   useEffect(() => {
-    const fetchPrecios = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/tbl_precios');
-        const data = await response.json();
-        console.log(data); // Check the structure of the received data
-        setPrecios(data); // Assuming `setPrecios` is the function to set the precios state
-      } catch (error) {
-        console.error('Error fetching precios:', error);
-      }
-    };
-  
+
     fetchPrecios();
   }, []);
 
@@ -121,7 +139,7 @@ const PrecioManagement = () => {
               <p>Valor</p>
               <p>Tipo</p>
             </div>
-            {precios.data.map((precio, index) => (
+            {precios.map((precio, index) => (
               <div key={index} className="dashboardPreciosContainerBody">
                 <p>{precio.id_precio}</p>
                 <p>{precio.nombre_precio}</p>
@@ -142,9 +160,6 @@ const PrecioManagement = () => {
             <div className="dashboardIngresoInputContainer">
               <p>Valor</p><input type="text" id="valor-ingresar" />
             </div>
-            <div className="dashboardIngresoInputContainer">
-              <p>Tipo</p><input type="text" id="tipo-ingresar" />
-            </div>
           </div>
           <button className="dashboardIngresoButton" onClick={handleIngresarPrecio}>INGRESAR</button>
         </div>
@@ -154,20 +169,54 @@ const PrecioManagement = () => {
           <h3>Modificar precios</h3>
           <div className="dashboardIngresosInputsContainer">
             <div className="dashboardIngresoInputContainer">
-              <p>Id de precio a modificar</p><input type="text" id="id-modificar" />
+              <p>ID de precio a modificar</p>
+              <select
+                id="id-modificar"
+                onChange={(e) => { fetchPrecioDetails(e.target.value);setModifyPrecioId(e.target.value)} }
+              >
+                <option value="">Seleccione un precio</option>
+                {precios.map((precio, index) => (
+                  <option key={index} value={precio.id_precio}>
+                    {precio.id_precio}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="dashboardIngresoInputContainer">
-              <p>Nuevo valor</p><input type="text" id="valor-modificar" />
+              <p>Nombre</p>
+              <input
+                type="text"
+                id="nombre-modificar"
+                className="nombre-input"
+              />
+            </div>
+            <div className="dashboardIngresoInputContainer">
+              <p>Valor</p>
+              <input
+                type="text"
+                id="valor-modificar"
+                className="valor-input"
+              />
             </div>
           </div>
-          <button className="dashboardIngresoButton" onClick={handleModificarPrecio}>MODIFICAR</button>
-        </div>
+          <button className="dashboardIngresoButton" onClick={handleModificarPrecio}>
+            MODIFICAR
+          </button>
+        </div>;
         <div className="dashboard50Container">
           <h3>Eliminar precios</h3>
           <div className="dashboardIngresosInputsContainer">
-            <div className="dashboardIngresoInputContainer">
-              <p>Id de precio a eliminar</p><input type="text" id="id-eliminar" />
-            </div>
+          <div className="dashboardIngresoInputContainer">
+                <p>ID Precio</p>
+                <select id="select" onChange={(e) => setSelectedPrecioId(e.target.value)}>
+                  <option value="">Seleccione un precio</option>
+                  {precios.map((precio, index) => (
+                    <option key={index} value={precio.id_precio}>
+                      {precio.id_precio}
+                    </option>
+                  ))}
+                </select>
+              </div>
           </div>
           <button className="dashboardIngresoButton" onClick={handleEliminarPrecio}>ELIMINAR</button>
         </div>
